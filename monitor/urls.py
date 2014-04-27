@@ -5,10 +5,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-                       url(r'^contribute$', 'docs.views.contribute',
+                       url(r'^introduction$', 'monitor.views.introduction',
+                           name='introduction'),
+                       url(r'^now$', 'monitor.views.monitor',
+                           name='monitor'),
+                       url(r'^help$', 'monitor.views.help',
+                           name='help'),
+                       url(r'^contribute$', 'monitor.views.contribute',
                            name='contribute'),
-                       url(r'^upload/', 'docs.views.upload',
-                           name='upload_document'),
-                       url(r'^browse/([a-zA-Z0-9-/_.]*)$', 'docs.views.browse',
-                           name='browse'),
                        )
