@@ -11,4 +11,11 @@ class Module():
     description = models.TextField()
     date_created = models.DateTimeField(default=datetime.now())
     last_updated = models.DateTimeField(default=datetime.now())
-    hostname = models.TextField(validators=[URLValidator()])
+    hostname = models.TextField(validators=[URLValidator()], null=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.last_updated = datetime.now()
+        super(Module, self).save(*args, **kwargs)
