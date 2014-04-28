@@ -22,7 +22,7 @@
 								{% if watcher.module == module %}
 									{% for data in datas %}
 										{% if data.watcher == watcher %}
-											<li>Update created at {{ data.date_created }} by {{ data.watcher }}, value = {{ data.value }}</li>
+											<li>Update created at {{ data.date_created|date:"jS F Y H:i:s" }} by {{ data.watcher }}, value = {{ data.value }}</li>
 										{% endif %}
 									{% endfor %}
 								{% endif %}

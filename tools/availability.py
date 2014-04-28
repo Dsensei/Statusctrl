@@ -47,6 +47,8 @@ def check_connectivity(reference):
         return True
     except request.URLError:
         return False
+    except socket.timeout:
+        return False
 
 
 def is_hostname_valid(hostname):
@@ -77,10 +79,11 @@ def get_response_code(url):
         return 0, False
 
 
-def is_up(url):
+def is_up(watcher):
     if is_internet_reachable():
-        if is_hostname_valid(get_hostname(url)):
-            http_code, up = get_response_code(normalize_url(url))
+        if is_hostname_valid(get_hostname(watcher.url())):
+            http_code, up = get_response_code(normalize_url(watcher.url()))
+            print("URL=" + watcher.url(), "Code=" + str(http_code))
             return up
         else:
             print(InvalidHostname)

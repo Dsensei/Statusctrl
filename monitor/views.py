@@ -4,11 +4,12 @@ from django.http import Http404
 from django.template import Context
 from tools.models import Watcher, Data
 from monitor.models import Module
+from tools import serializer
 
 def introduction(request):
     return render(request, 'introduction.html')
 
-def monitor(request, module=None):
+def monitor(request, watcher=None):
     if module:
         try:
             modules = Module.objects.get(name=module)
