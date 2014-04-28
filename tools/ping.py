@@ -438,6 +438,6 @@ class Ping(object):
                 return None, 0, 0, 0, 0
 
 
-def ping(hostname, timeout=1000, count=3, packet_size=55, *args, **kwargs):
+def ping(hostname, timeout=1000, count=4, packet_size=55, *args, **kwargs):
     p = Ping(hostname, timeout, packet_size, *args, **kwargs)
     return p.run(count)

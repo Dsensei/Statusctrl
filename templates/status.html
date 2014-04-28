@@ -6,37 +6,68 @@
 			<div class="progress-bar progress-bar-warning" style="width: 20%"></div>
 			<div class="progress-bar progress-bar-danger" style="width: 10%"></div>
 		</div>
-		<div class="col-lg-8">
-			<div class="bs-component">
-				<div class="jumbotron">
-					<h2>Epiportal (Module)</h2>
-					<p>Web app' for students (Description)</p>
+		{% if modules %}
+			{% for module in modules %}
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="bs-component">
+						<div class="jumbotron">
+							<h2>{{ module.name }}</h2>
+							<small>{{ module.description }}</small>
+						</div>
+					</div>
+					{% if watchers %}
+						<ul>
+							{% for watcher in watchers %}
+								{% if watcher.module == module %}
+									{% for data in datas %}
+										{% if data.watcher == watcher %}
+											<li>Update created at {{ data.date_created }} by {{ data.watcher }}, value = {{ data.value }}</li>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+							{% endfor %}
+						</ul>
+					{% endif %}
+					<div id="chart-container">
+						<div id="detailed-chart" style="rx: 0; ry: 0; height: 200px; margin: 0 auto;"></div>
+						<div id="chart" style="rx: 0; ry: 0; height: 200px; margin: 0 auto;"></div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="alert alert-dismissable alert-info">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<h4><strong>Help</strong></h4>
+						<p>It seems that you didn't add any watcher to this module!</p>
+						<p><a href="#" class="alert-link">Click Here</a></p>
+					</div>
+					<div class="alert alert-dismissable alert-success">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<h4><strong>Well done!</strong></h4>
+						<p>Everything works as expected!</p>
+					</div>
+					<div class="alert alert-dismissable alert-warning">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<h4><strong>Warning!</strong></h4>
+						<p>Best check your services, at least one of them seems to be
+							unstable.</p>
+					</div>
+					<div class="alert alert-dismissable alert-danger">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<h4><strong>Alert!</strong></h4>
+						<p>Something went wrong, at least one of your service is down!</p>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-lg-4">
-			<div class="alert alert-dismissable alert-info">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<h4><strong>Help</strong></h4>
-				<p>It seems that you didn't add any watcher to this module!</p>
-				<p><a href="#" class="alert-link">Click Here</a></p>
-			</div>
-			<div class="alert alert-dismissable alert-success">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<h4><strong>Well done!</strong></h4>
-				<p>Everything works as expected!</p>
-			</div>
-			<div class="alert alert-dismissable alert-warning">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<h4><strong>Warning!</strong></h4>
-				<p>Best check your services, at least one of them seems to be
-					unstable.</p>
-			</div>
-			<div class="alert alert-dismissable alert-danger">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<h4><strong>Alert!</strong></h4>
-				<p>Something went wrong, at least one of your service is down!</p>
-			</div>
-		</div>
+			{% endfor %}
+		{% endif %}
 	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<script>
+
+	</script>
 {% endblock %}

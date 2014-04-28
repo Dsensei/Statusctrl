@@ -3,6 +3,7 @@ import socket
 import re
 from urllib import request
 
+
 class InternetNotReachable(Exception):
     """Exception raised when google and yahoo are not reachable.
 
@@ -82,6 +83,8 @@ def is_up(url):
             http_code, up = get_response_code(normalize_url(url))
             return up
         else:
+            print(InvalidHostname)
             raise InvalidHostname()
     else:
+        print(InternetNotReachable)
         raise InternetNotReachable()
