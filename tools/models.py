@@ -30,7 +30,7 @@ class MonitorTool(models.Model):
             print("Error occured :", err)
             return False
         if a:
-            val = 1
+            val = 100
         else:
             val = 0
         data = Data()

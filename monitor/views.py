@@ -9,23 +9,17 @@ from tools import serializer
 def introduction(request):
     return render(request, 'introduction.html')
 
-def monitor(request, watcher=None):
+def monitor(request, module=None):
     if module:
         try:
-            modules = Module.objects.get(name=module)
+            module = Module.objects.get(name=module)
+            data = serializer.get_modules(module)
         except ObjectDoesNotExist:
             raise Http404()
-        watchers = Watcher.objects.filter(module=modules)
-        datas = Data.objects.filter(watcher__in=watchers)
     else:
-        modules = Module.objects.all()
-        watchers = Watcher.objects.all()
-        datas = Data.objects.all()
-
+        data = serializer.get_modules()
     return render(request, 'status.html', Context({
-        'modules': modules,
-        'watchers': watchers,
-        'datas': datas,
+        'modules': data,
         }))
 
 def help(request):
