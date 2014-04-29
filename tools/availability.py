@@ -1,7 +1,8 @@
-import requests
 import socket
 import re
 from urllib import request
+
+import requests
 
 
 class InternetNotReachable(Exception):
@@ -13,6 +14,7 @@ class InternetNotReachable(Exception):
     """
     def __init__(self,  message='Internet not reachable'):
         self.message = message
+
 
 class InvalidHostname(Exception):
     """Exception raised when google and yahoo are not reachable.
@@ -26,14 +28,14 @@ class InvalidHostname(Exception):
 
 
 def normalize_url(url):
-    '''If a url doesn't have a http/https prefix, add http://'''
+    """If a url doesn't have a http/https prefix, add http://"""
     if not re.match('^http[s]?://', url):
         url = 'http://' + url
     return url
 
 
 def get_hostname(url):
-    '''If a url have a http/https prefix, get rid of it'''
+    """If a url have a http/https prefix, get rid of it"""
     if re.match('^http://', url):
         url = url[7:]
     elif re.match('^https://', url):
@@ -61,7 +63,7 @@ def is_hostname_valid(hostname):
 
 
 def is_internet_reachable():
-    '''Checks Google then Yahoo just in case one is down'''
+    """Checks Google then Yahoo just in case one is down"""
     google_ip1 = check_connectivity('http://173.194.70.113')
     if not google_ip1:
         google_ip2 = check_connectivity('http://173.194.113.36')

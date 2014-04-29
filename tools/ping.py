@@ -23,7 +23,7 @@ import socket
 import struct
 import sys
 import time
-from tools.availability import get_hostname
+from tools import availability
 
 
 if sys.platform.startswith("win32"):
@@ -440,5 +440,5 @@ class Ping(object):
 
 
 def ping(url, timeout=1000, count=3, packet_size=55, *args, **kwargs):
-    p = Ping(get_hostname(url), timeout, packet_size, *args, **kwargs)
+    p = Ping(availability.get_hostname(url), timeout, packet_size, *args, **kwargs)
     return p.run(count)

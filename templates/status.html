@@ -23,36 +23,54 @@
 												<h4 style="float: left">{{ monitor.name }}</h4>
 													<p style="text-align: right;">
 														{% if monitor.name == "PING" %}
-														{{ monitor.data_avg|floatformat:-2 }}ms
-													{% elif monitor.name == "AVAILABILITY" %}
-													{{ monitor.data_avg|floatformat:3 }} %
-													{% endif %}
+															{{ monitor.data_avg|floatformat }}ms
+														{% elif monitor.name == "AVAILABILITY" %}
+															{{ monitor.data_avg|floatformat:3 }} %
+														{% endif %}
 													</p>
-												<input type='hidden' name="monitor" value='{{ monitor.id }}' data-m="{% for data in monitor.data %}{{ data.value }},{% endfor %}"/>
-													<div id="chart-{{ monitor.id }}" style="height: 200px; margin: 0 auto"></div>
+													<div id="chart-{{ watcher.id }}-{{ monitor.name|lower }}"
+													     style="height: 200px; margin: 0 auto"></div>
 													<script>
 														$(function () {
-															var interval = 10;
+															var interval = {{ watcher.ttl }};
 															var range_min = 14 * interval * 1000; // ms
-															$('#container').highcharts({
+															$('#chart-{{ watcher.id }}-{{ monitor.name|lower }}').highcharts({
+
 																chart: {
-																	zoomType: 'x'
+																	backgroundColor: 'rgba(0, 0, 0, 0)',
+																	zoomType: 'x',
+																	marginRight: 20,
+																	marginBottom: 25,
+																	style: {
+																		fontFamily: 'monospace',
+																		color: "#fff"
+																	}
 																},
-																title: {
-																	text: 'Website average response time'
-																},
-																subtitle: {
-																	text: document.ontouchstart === undefined ?
-																			'Click and drag in the plot area to zoom in' :
-																			'Pinch the chart to zoom in'
-																},
+																title: null,
+																colors: ['#27ae60'],
+																subtitle: null,
 																xAxis: {
 																	type: 'datetime',
-																	minRange: range_min // fourteen days
+																	minRange: range_min, // fourteen days,
+																	lineColor: '#EEEEEE',
+																	lineWidth: 2,
+																	labels: {
+																		style: {
+																			color: '#EEEEEE',
+																			font: '11px Trebuchet MS, Verdana, sans-serif'
+																		}
+																	}
 																},
 																yAxis: {
 																	title: {
 																		text: 'ping'
+																	},
+																	gridLineWidth: 0.5,
+																	labels: {
+																		style: {
+																			color: '#EEEEEE',
+																			font: '11px Trebuchet MS, Verdana, sans-serif'
+																		}
 																	}
 																},
 																legend: {
@@ -61,31 +79,51 @@
 																plotOptions: {
 																	area: {
 																		fillColor: {
-																			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 0},
-																			stops: [
-																				[0, Highcharts.getOptions().colors[0]],
-																				[1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0).get('rgba')]
-																			]
+																			plotBackgroundColor: 'rgba(255, 255, 255, .5)'
 																		},
 																		marker: {
 																			radius: 2
 																		},
-																		lineWidth: 1,
+																		lineWidth: 0.7,
 																		states: {
 																			hover: {
-																				lineWidth: 1
+																				lineWidth: 1.2
 																			}
 																		},
 																		threshold: null
 																	}
 																},
-
+																credits: {
+																	position: {
+																		align: 'left',
+																		verticalAlign: 'bottom',
+																		x: 10,
+																		y: 0
+																	}
+																},
+																navigation: {
+																	buttonOptions: {
+																		enabled: false
+																	}
+																},
+																tooltip: {
+																	shared: true,
+																	useHTML: true,
+																	positioner: function () {
+																		return { x: 67, y: 0 };
+																	},
+																	shadow: false,
+																	borderWidth: 0,
+																	backgroundColor: 'rgba(255,255,255,0.7)'
+																},
 																series: [{
 																	type: 'area',
-																	name: 'Ping',
+																	name: '{{ monitor.name|title }}',
 																	pointInterval: interval * 1000,
-																	pointStart: Date.UTC(2014, 04, 28, 19, 44, 10),
-																	data: []
+																	{% with monitor.data.all|first as d %}
+																	pointStart: Date.UTC({{ d.date_created|date:"Y, m, j, H, i, s" }}),
+																	{% endwith %}
+																	data: [{% for data in monitor.data %}{{ data.value }},{% endfor %}]
 																}]
 															});
 														});

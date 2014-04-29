@@ -1,24 +1,25 @@
-import json
 from datetime import datetime, timedelta
-from django.db.models import Avg
-from monitor.models import Module
-from tools.models import Data, MonitorTool, WebsiteWatcher, Watcher
 from operator import attrgetter
 
+from monitor.models import Module
+from tools.models import Data, WebsiteWatcher
 
-def get_monitor_data(monitor, date_start=None, date_end=None):
+
+def get_monitor_data(watcher, monitor, date_start=None, date_end=None):
 
     if not date_start:
         data = Data.objects.filter(monitor=monitor)
     elif date_start and date_end:
         data = Data.objects.filter(
-            watcher=monitor,
+            monitor=monitor,
+            watcher=watcher,
             date__range=[date_start, date_end]
         )
     else:
         data = Data.objects.filter(
-            watcher=monitor,
-            date__range=[date_start, datetime.now()]
+            monitor=monitor,
+            watcher=watcher,
+            date_created__range=[date_start, datetime.now()]
         )
     data.order_by('date_created')
     return data
@@ -29,9 +30,9 @@ def get_wanted_data(data, date_min, date_max, interval=None, nb_val=None):
     data_length = len(data)
 
     if not date_min:
-        date_min = min(data,key=attrgetter('date_created')).date_created
+        date_min = min(data, key=attrgetter('date_created')).date_created
     if not date_max:
-        date_max = max(data,key=attrgetter('date_created')).date_created
+        date_max = max(data, key=attrgetter('date_created')).date_created
     delta = date_max - date_min
 
     if nb_val:
@@ -55,17 +56,19 @@ def get_monitors(watcher, start=None, end=None, interval=None, nb_val=None):
     l = []
     monitors = watcher.monitor_tools.all()
     for monitor in monitors:
-        data = get_monitor_data(monitor, start, end)
+        data = get_monitor_data(watcher, monitor, start, end)
         if interval or nb_val:
             data = get_wanted_data(data, start, end, interval, nb_val)
         # TODO: Find something speeder
-        sum = 0
-        for i in data:
-            sum += i.value
-        avg = float(sum) / float(len(data))
+        if len(data) > 0:
+            c = 0
+            for i in data:
+                c += i.value
+            avg = float(c) / float(len(data))
+        else:
+            avg = 0
         l.append(
             {
-                'id': str(monitor.uuid),
                 'name': monitor.name,
                 'description': monitor.description,
                 "data": data,
@@ -82,6 +85,7 @@ def get_watchers(module, start=None, end=None, interval=None, nb_val=None):
     for watcher in watchers:
         l.append(
             {
+                'id': str(watcher.uuid),
                 'name': watcher.name,
                 'description': watcher.description,
                 'ttl': watcher.ttl,
@@ -91,6 +95,7 @@ def get_watchers(module, start=None, end=None, interval=None, nb_val=None):
             }
         )
     return l
+
 
 def get_module(module, start=None, end=None, interval=None, nb_val=None):
     return (
@@ -114,6 +119,7 @@ def get_modules(module=None, start=None, end=None, interval=None, nb_val=None):
     for module in modules:
         l.append(get_module(module, start, end, interval, nb_val))
     return l
+
 # Tests :
 """
 from tools.models import WebsiteWatcher

@@ -1,11 +1,13 @@
-from monitor.models import Module
-from tools.models import WebsiteWatcher, Watcher, MonitorTool
 import schedule
-import time
+
+from monitor.models import Module
+from tools.models import WebsiteWatcher, MonitorTool
+from django.core.exceptions import ObjectDoesNotExist
+
 
 try:
     m = Module.objects.get(name="EpiPortal")
-except:
+except ObjectDoesNotExist:
     m = Module()
     m.name = "EpiPortal"
     m.description = "Web service for students"
@@ -29,7 +31,7 @@ for tool in monitors['tools']:
 
     try:
         t = MonitorTool.objects.get(name=tool)
-    except:
+    except ObjectDoesNotExist:
         t = MonitorTool()
         t.name = tool
         t.description = monitors['tools'][tool]['description']
@@ -37,7 +39,7 @@ for tool in monitors['tools']:
 
 try:
     w1 = WebsiteWatcher.objects.get(name="Website watcher 1")
-except:
+except ObjectDoesNotExist:
     w1 = WebsiteWatcher()
     w1.name = "Website watcher 1"
     w1.description = "watcher for epiportal"
@@ -53,7 +55,7 @@ except:
 
 try:
     w2 = WebsiteWatcher.objects.get(name="Website watcher 2")
-except:
+except ObjectDoesNotExist:
     w2 = WebsiteWatcher()
     w2.name = "Website watcher 2"
     w2.description = "watcher for juliendubiel.net"

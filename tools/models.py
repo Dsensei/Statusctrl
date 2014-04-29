@@ -1,16 +1,17 @@
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+
 from django.db import models
-from tools import availability, ping
-from monitor.models import Module
 from django.core.validators import URLValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
-
 from uuidfield import UUIDField
+
+from tools import availability, ping
+from monitor.models import Module
 
 
 class MonitorTool(models.Model):
-    uuid = UUIDField(auto=True, unique=True)
-    name = models.CharField(max_length=15)
+    name = models.CharField(max_length=15, unique=True)
     description = models.CharField(max_length=255)
 
     def __str__(self):
@@ -36,6 +37,7 @@ class MonitorTool(models.Model):
         data = Data()
         data.value = val
         data.monitor = self
+        data.watcher = watcher
         data.date_created = datetime.now()
         data.save()
         return a
@@ -45,6 +47,7 @@ class MonitorTool(models.Model):
         data = Data()
         data.value = p.avg_rtt
         data.monitor = self
+        data.watcher = watcher
         data.date_created = datetime.now()
         data.save()
         return data.value
@@ -54,7 +57,7 @@ class MonitorTool(models.Model):
         try:
             t = MonitorTool.objects.get(name=name)
             return t
-        except:
+        except ObjectDoesNotExist:
             return None
 
     @staticmethod
@@ -62,14 +65,8 @@ class MonitorTool(models.Model):
         return MonitorTool.objects.all()
 
 
-class Data(models.Model):
-    date_created = models.DateTimeField()
-    value = models.DecimalField(max_digits=9, decimal_places=3)
-    monitor = models.ForeignKey(MonitorTool)
-
-
 class Watcher(models.Model):
-    # Seconds between two updates
+    uuid = UUIDField(auto=True, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
     ttl = models.PositiveIntegerField()
@@ -116,3 +113,10 @@ class WebsiteWatcher(Watcher):
             tool.update(self)
         self.module.last_updated = datetime.now()
         self.module.save()
+
+
+class Data(models.Model):
+    date_created = models.DateTimeField()
+    value = models.DecimalField(max_digits=9, decimal_places=3)
+    monitor = models.ForeignKey(MonitorTool)
+    watcher = models.ForeignKey(Watcher)
