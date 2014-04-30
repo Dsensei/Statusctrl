@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="{% url 'monitor.views.introduction' %}" class="navbar-brand">Status.ctrl</a>
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse collapse" id="navbar-main">
+				<ul class="nav navbar-nav">
+					{% if public_modules %}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="/monitor/">All</a></li>
+								{% for m in public_modules %}
+									<li><a href="/monitor/{{ m.slug_name }}">{{ m.name }}</a></li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endif %}
+				</ul>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><input type="text" class="form-control col-lg-8" placeholder="Search"></li>
+					<li><a href="{% url 'monitor.views.contribute' %}">Contribute</a></li>
+					<li><a href="{% url 'monitor.views.introduction' %}">About</a></li>
+				</ul>
+
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="page-header" id="banner">
+			<div class="row">
+				<div class="col-lg-6">
+					<h1 id="container">Status.ctrl</h1>
+					<p class="lead">Easy-to-use open-source web status app'</p>
+				</div>
+			</div>
+		</div>
+		<div class="row status-main">
+			{% block content %}
+			{% endblock %}
+		</div>
+		{% include 'snippet/footer.html' %}
+	</div>
+{% endblock %}

@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from operator import attrgetter
 
-from monitor.models import Module
-from tools.models import Data, WebsiteWatcher
+from monitor.models import Module, Data, WebsiteWatcher
+from tools import availability
 
 
 def get_monitor_data(watcher, monitor, date_start=None, date_end=None):
@@ -29,8 +29,7 @@ def get_wanted_data(data, date_min, date_max, interval=None, nb_val=None):
 
     data_length = len(data)
 
-    if not date_min:
-        date_min = min(data, key=attrgetter('date_created')).date_created
+    date_min = min(data, key=attrgetter('date_created')).date_created
     if not date_max:
         date_max = max(data, key=attrgetter('date_created')).date_created
     delta = date_max - date_min
@@ -104,6 +103,7 @@ def get_module(module, start=None, end=None, interval=None, nb_val=None):
             'description': module.description,
             'last_updated': module.last_updated,
             'hostname': module.hostname,
+            'url': availability.normalize_url(module.hostname),
             'watchers': get_watchers(module, start, end, interval, nb_val)
         }
     )
@@ -115,15 +115,7 @@ def get_modules(module=None, start=None, end=None, interval=None, nb_val=None):
     if not module:
         modules = Module.objects.all()
     else:
-        modules = Module.objects.filter(module=module)
+        modules = Module.objects.filter(name=module)
     for module in modules:
         l.append(get_module(module, start, end, interval, nb_val))
     return l
-
-# Tests :
-"""
-from tools.models import WebsiteWatcher
-w1 = WebsiteWatcher.objects.get(name="Website watcher 1")
-from tools import serializer
-serializer.get_monitors(w1)
-"""

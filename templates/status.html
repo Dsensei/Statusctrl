@@ -1,4 +1,4 @@
-{% extends "superhero.html" %}
+{% extends "superhero_anonymous.html" %}
 {% block content %}
 	<div class="col-lg-12">
 		<div class="progress">
@@ -11,25 +11,36 @@
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="bs-component">
-							<div class="jumbotron">
-								<h2>{{ module.name }} - <small>{{ module.description }}</small></h2>
-								<small>Last update : {{ module.last_updated|date:"jS F Y H:i:s" }}</small>
-								{% if module.watchers %}
-									{% for watcher in module.watchers %}
+							<h2>
+								<a target="_blank" href="{{ module.url }}">
+									{{ module.name }}
+								</a>
+								- <small>{{ module.description }}</small>
+							</h2>
+							<small>Last update : {{ module.last_updated|date:"jS F Y H:i:s" }}</small>
+							{% if module.watchers %}
+								{% for watcher in module.watchers %}
+									<div class="jumbotron">
 										<h3>{{ watcher.name }}</h3>
 										{% if watcher.monitors %}
 											{% for monitor in watcher.monitors %}
-												<div class="monitor" style="border-left:solid 1px #9aa8b5; padding-left: 20px; margin-bottom: 10px;">
-												<h4 style="float: left">{{ monitor.name }}</h4>
-													<p style="text-align: right;">
+												<br>
+												<br>
+												<div class="monitor" style="border-left:2px solid #eee; padding-left: 20px; padding-bottom: 10px;">
+													<h4 style="float: left">{{ monitor.name }}</h4>
+													<p style="float: right;">
 														{% if monitor.name == "PING" %}
 															{{ monitor.data_avg|floatformat }}ms
 														{% elif monitor.name == "AVAILABILITY" %}
 															{{ monitor.data_avg|floatformat:3 }} %
+														{% elif monitor.name == "STATUS" %}
+															{{ monitor.status }}
 														{% endif %}
 													</p>
+													<br>
+													{% if monitor.data %}
 													<div id="chart-{{ watcher.id }}-{{ monitor.name|lower }}"
-													     style="height: 200px; margin: 0 auto"></div>
+													     style="height: {% if monitor.name == "PING" %}200{% elif monitor.name == "AVAILABILITY" %}100{% elif monitor.name == "STATUS" %}100{% endif %}px; margin: 0 auto"></div>
 													<script>
 														$(function () {
 															var interval = {{ watcher.ttl }};
@@ -63,7 +74,7 @@
 																},
 																yAxis: {
 																	title: {
-																		text: 'ping'
+																		text: '{{ monitor.name|lower }}'
 																	},
 																	gridLineWidth: 0.5,
 																	labels: {
@@ -121,23 +132,23 @@
 																	name: '{{ monitor.name|title }}',
 																	pointInterval: interval * 1000,
 																	{% with monitor.data.all|first as d %}
-																	pointStart: Date.UTC({{ d.date_created|date:"Y, m, j, H, i, s" }}),
+																		pointStart: Date.UTC({{ d.date_created|date:"Y, m, j, H, i, s" }}),
 																	{% endwith %}
 																	data: [{% for data in monitor.data %}{{ data.value }},{% endfor %}]
 																}]
 															});
 														});
 													</script>
+													{% else %}
+														<br>
+														<p style="padding: 20px 0; text-align: center">Data unavailable!</p>
+													{% endif %}
 												</div>
 											{% endfor %}
 										{% endif %}
-									{% endfor %}
-								{% endif %}
-							</div>
-						</div>
-						<div id="chart-container">
-							<div id="detailed-chart" style="rx: 0; ry: 0; height: 200px; margin: 0 auto;"></div>
-							<div id="chart" style="rx: 0; ry: 0; height: 200px; margin: 0 auto;"></div>
+									</div>
+								{% endfor %}
+							{% endif %}
 						</div>
 					</div>
 					<div class="col-lg-4">
@@ -175,7 +186,4 @@
 {% block scripts %}
 	<script src="http://code.highcharts.com/highcharts.js"></script>
 	<script src="http://code.highcharts.com/modules/exporting.js"></script>
-	<script>
-
-	</script>
 {% endblock %}

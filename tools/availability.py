@@ -6,7 +6,7 @@ import requests
 
 
 class InternetNotReachable(Exception):
-    """Exception raised when google and yahoo are not reachable.
+    """Exception raised when google is not reachable.
 
     Attributes:
         expression -- input expression in which the error occurred
@@ -17,7 +17,7 @@ class InternetNotReachable(Exception):
 
 
 class InvalidHostname(Exception):
-    """Exception raised when google and yahoo are not reachable.
+    """Exception raised when the hostname can't be resolved.
 
     Attributes:
         expression -- input expression in which the error occurred
@@ -63,7 +63,7 @@ def is_hostname_valid(hostname):
 
 
 def is_internet_reachable():
-    """Checks Google then Yahoo just in case one is down"""
+    """Checks two Google ips just in case one is down"""
     google_ip1 = check_connectivity('http://173.194.70.113')
     if not google_ip1:
         google_ip2 = check_connectivity('http://173.194.113.36')
@@ -75,8 +75,8 @@ def is_internet_reachable():
 def get_response_code(url):
     try:
         r = requests.head(url)
+
         return r.status_code, r.status_code in range(200, 302)
-        #prints the int of the status code. Find more at httpstatusrappers.com :)
     except ConnectionError:
         return 0, False
 
@@ -93,3 +93,4 @@ def is_up(watcher):
     else:
         print(InternetNotReachable)
         raise InternetNotReachable()
+
