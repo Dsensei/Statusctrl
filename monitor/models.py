@@ -9,7 +9,6 @@ from tools import availability, ping
 from django.template.defaultfilters import slugify
 
 
-
 class Module(models.Model):
 
     uuid = UUIDField(auto=True, unique=True),
@@ -54,10 +53,14 @@ class MonitorTool(models.Model):
         return self.name
 
     def update(self, watcher):
-        if self.name == 'AVAILABILITY':
-            update_availability(self, watcher)
-        elif self.name == 'PING':
-            update_ping(self, watcher)
+
+        try:
+            if self.name == 'AVAILABILITY':
+                update_availability(self, watcher)
+            elif self.name == 'PING':
+                update_ping(self, watcher)
+        except:
+            pass
 
     @staticmethod
     def get(name):
@@ -160,12 +163,12 @@ def update_availability(monitor_tool, watcher):
     return a
 
 
-def update_ping(MonitorTool, watcher):
+def update_ping(monitor_tool, watcher):
     try:
         p = ping.ping(watcher.url())
         data = Data()
         data.value = p.avg_rtt
-        data.monitor = MonitorTool
+        data.monitor = monitor_tool
         data.watcher = watcher
         data.date_created = datetime.now()
         data.save()
