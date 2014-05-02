@@ -4,7 +4,7 @@
 
 *Inspired by status.io & statuspage.io*
 
-![Preview](https://bytebucket.org/Dsensei/status.ctrl/raw/3ed59e942347116c1d2251d02ad5c118617ab734/static/img/preview.png)
+![Preview](https://bytebucket.org/Dsensei/status.ctrl/raw/e4739ba2bc5bd92fd24dbc47df2ff5c8598d4552/static/img/preview.png)
 
 ## Features
 
