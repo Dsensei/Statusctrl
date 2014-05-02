@@ -1,0 +1,5 @@
+.watcher-name { text-align: center; font-style: italic; }
+#status-rating { display: block; list-style:none;  margin:auto; width: 75px; height: 30px; padding: 0; }
+#status-rating li { float:left; margin:5px; }
+#status-rating li a { display:block; width:15px; height:15px; border:1px solid #888; background-color:#333;
+	-moz-box-shadow:0 0 5px #888; -moz-border-radius:8px; -webkit-box-shadow:0 0 5px #888; -webkit-border-radius:8px; -o-box-shadow:0 0 5px #888; -o-border-radius:8px; }

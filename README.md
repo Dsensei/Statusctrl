@@ -18,6 +18,11 @@
 		+ Availability
 		+ Ping (Website response time)
 
+TODO :
+
++ Handle email alerts
++ Status alerts
+
 ## Install instructions
 
 ### Virtualenv way

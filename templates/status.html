@@ -1,4 +1,5 @@
 {% extends "superhero.html" %}
+{% load i18n %}
 {% block content %}
 	<div class="col-lg-12">
 		<div class="progress">
@@ -21,7 +22,12 @@
 							{% if module.watchers %}
 								{% for watcher in module.watchers %}
 									<div class="jumbotron">
-										<h3>{{ watcher.name }}</h3>
+										<h3 class="watcher-name">{{ watcher.name }}</h3>
+										<ul id="status-rating">
+											<li><a href="#" style="background-color: rgb(189, 44, 51);"></a></li>
+											<li><a href="#" style="background-color: rgb(228, 148, 32);"></a></li>
+											<li><a href="#" style="background-color: rgb(59, 173, 84);"></a></li>
+										</ul>
 										{% if watcher.monitors %}
 											{% for monitor in watcher.monitors %}
 												<br>
@@ -141,11 +147,15 @@
 													</script>
 													{% else %}
 														<br>
-														<p style="padding: 20px 0; text-align: center">Data unavailable!</p>
+														<p style="padding: 20px 0; text-align: center">{% trans 'Data unavailable!' %}</p>
 													{% endif %}
 												</div>
 											{% endfor %}
 										{% endif %}
+										<br>
+										<a href="{% url 'delete_module' module.slug %}" type="button" class="btn btn-sm btn-danger pull-right">{% trans 'Delete' %}</a>
+										<a href="{% url 'edit_module' module.slug %}" type="button" class="btn btn-sm btn-warning pull-right">{% trans 'Modify' %}</a>
+										<a href="{% url 'create_watcher' %}" type="button" class="btn btn-sm btn-info pull-right">{% trans 'Add watcher' %}</a>
 									</div>
 								{% endfor %}
 							{% endif %}

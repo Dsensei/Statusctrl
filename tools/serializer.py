@@ -100,6 +100,7 @@ def get_module(module, start=None, end=None, interval=None, nb_val=None):
     return (
         {
             'name': module.name,
+            'slug': module.slug_name,
             'description': module.description,
             'last_updated': module.last_updated,
             'hostname': module.hostname,
@@ -109,13 +110,13 @@ def get_module(module, start=None, end=None, interval=None, nb_val=None):
     )
 
 
-def get_modules(module=None, start=None, end=None, interval=None, nb_val=None):
+def get_modules(module_slug=None, start=None, end=None, interval=None, nb_val=None):
 
     l = []
-    if not module:
+    if not module_slug:
         modules = Module.objects.all()
     else:
-        modules = Module.objects.filter(name=module)
+        modules = Module.objects.filter(slug_name=module_slug)
     for module in modules:
         l.append(get_module(module, start, end, interval, nb_val))
     return l
