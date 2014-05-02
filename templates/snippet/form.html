@@ -1,0 +1,16 @@
+{% for hidden in form.hidden_fields %}
+	{{ hidden }}
+{% endfor %}
+{% for field in form.visible_fields %}
+	{% for error in field.errors %}
+		<label class="control-label" for="inputError">{{ error }}</label>
+	{% endfor %}
+	<div class="form-group">
+		<div class="input-group">
+			<label class="control-label" for="focusedInput">{{ field.label_tag }}</label>
+			 {% render_field field class="form-control" %}
+		</div>
+	</div>
+{% endfor %}
+<input class="form-control" placeholder="Username" type="text" name="username" value="">
+<input class="form-control" placeholder="Password" type="password" name="password" value="">

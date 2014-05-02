@@ -5,10 +5,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 
 try:
-    User.objects.get(username='john')
+    user = User.objects.get(username='john')
 except ObjectDoesNotExist:
-    user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-
+    user = User.objects.create_user('john', 'lennon@thebeatles.com',
+                                    'johnpassword')
 
 try:
     m1 = Module.objects.get(name="EpiPortal")
@@ -53,21 +53,20 @@ monitors = {
     'tools':
         {
             'AVAILABILITY':
-            {
-                'description': 'Availability'
-            },
+                {
+                    'description': 'Availability'
+                },
             'PING':
-            {
-                'description': 'Ping'
-            },
+                {
+                    'description': 'Ping'
+                },
             'STATUS':
-            {
-                'description': 'Status'
-            },
+                {
+                    'description': 'Status'
+                },
         }
 }
 for tool in monitors['tools']:
-
     try:
         t = MonitorTool.objects.get(name=tool)
     except ObjectDoesNotExist:
@@ -88,9 +87,13 @@ except ObjectDoesNotExist:
     w1.module = m1
     w1.ttl = 10
     w1.save()
-    WatcherOrder.objects.create(watcher=w1, tool=MonitorTool.get('AVAILABILITY'), display_pos=1)
-    WatcherOrder.objects.create(watcher=w1, tool=MonitorTool.get('PING'), display_pos=2)
-    WatcherOrder.objects.create(watcher=w1, tool=MonitorTool.get('STATUS'), display_pos=3)
+    WatcherOrder.objects.create(watcher=w1, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
+    WatcherOrder.objects.create(watcher=w1,
+                                tool=MonitorTool.get('AVAILABILITY'),
+                                display_pos=2)
+    WatcherOrder.objects.create(watcher=w1, tool=MonitorTool.get('PING'),
+                                display_pos=3)
     # w1.monitor_tools.add(MonitorTool.get('AVAILABILITY'))
     # w1.monitor_tools.add(MonitorTool.get('PING'))
     # w1.monitor_tools.add(MonitorTool.get('STATUS'))
@@ -110,7 +113,8 @@ except ObjectDoesNotExist:
     w2.ttl = 10
     w2.save()
     w2.save()
-    WatcherOrder.objects.create(watcher=w2, tool=MonitorTool.get('STATUS'), display_pos=1)
+    WatcherOrder.objects.create(watcher=w2, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
 
 try:
     w3 = WebsiteWatcher.objects.get(name="blog.juliendubiel.net")
@@ -124,9 +128,13 @@ except ObjectDoesNotExist:
     w3.module = m2
     w3.ttl = 10
     w3.save()
-    WatcherOrder.objects.create(watcher=w3, tool=MonitorTool.get('AVAILABILITY'), display_pos=1)
-    WatcherOrder.objects.create(watcher=w3, tool=MonitorTool.get('PING'), display_pos=2)
-    WatcherOrder.objects.create(watcher=w3, tool=MonitorTool.get('STATUS'), display_pos=3)
+    WatcherOrder.objects.create(watcher=w3, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
+    WatcherOrder.objects.create(watcher=w3,
+                                tool=MonitorTool.get('AVAILABILITY'),
+                                display_pos=2)
+    WatcherOrder.objects.create(watcher=w3, tool=MonitorTool.get('PING'),
+                                display_pos=3)
 
 try:
     w4 = WebsiteWatcher.objects.get(name="dcipher.juliendubiel.net")
@@ -140,7 +148,8 @@ except ObjectDoesNotExist:
     w4.module = m2
     w4.ttl = 10
     w4.save()
-    WatcherOrder.objects.create(watcher=w4, tool=MonitorTool.get('STATUS'), display_pos=1)
+    WatcherOrder.objects.create(watcher=w4, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
 
 try:
     w5 = WebsiteWatcher.objects.get(name="paste.42portal.com")
@@ -154,9 +163,13 @@ except ObjectDoesNotExist:
     w5.module = m3
     w5.ttl = 10
     w5.save()
-    WatcherOrder.objects.create(watcher=w5, tool=MonitorTool.get('AVAILABILITY'), display_pos=3)
-    WatcherOrder.objects.create(watcher=w5, tool=MonitorTool.get('PING'), display_pos=2)
-    WatcherOrder.objects.create(watcher=w5, tool=MonitorTool.get('STATUS'), display_pos=1)
+    WatcherOrder.objects.create(watcher=w5, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
+    WatcherOrder.objects.create(watcher=w5,
+                                tool=MonitorTool.get('AVAILABILITY'),
+                                display_pos=3)
+    WatcherOrder.objects.create(watcher=w5, tool=MonitorTool.get('PING'),
+                                display_pos=2)
 
 try:
     w6 = WebsiteWatcher.objects.get(name="epirev.com")
@@ -170,11 +183,13 @@ except ObjectDoesNotExist:
     w6.module = m4
     w6.ttl = 10
     w6.save()
-    WatcherOrder.objects.create(watcher=w6, tool=MonitorTool.get('AVAILABILITY'), display_pos=2)
-    WatcherOrder.objects.create(watcher=w6, tool=MonitorTool.get('PING'), display_pos=3)
-    WatcherOrder.objects.create(watcher=w6, tool=MonitorTool.get('STATUS'), display_pos=1)
-
-
+    WatcherOrder.objects.create(watcher=w6, tool=MonitorTool.get('STATUS'),
+                                display_pos=1)
+    WatcherOrder.objects.create(watcher=w6,
+                                tool=MonitorTool.get('AVAILABILITY'),
+                                display_pos=2)
+    WatcherOrder.objects.create(watcher=w6, tool=MonitorTool.get('PING'),
+                                display_pos=3)
 
 watchers = WebsiteWatcher.objects.all()
 for watcher in watchers:
